@@ -1,6 +1,7 @@
 package com.tsing_gu.tsing.sunshine;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -58,6 +59,10 @@ public class ForecastFragment extends Fragment {
             fetcher.execute("h8n0b8");
             return true;
         }
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(getContext(), SettingsActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -83,7 +88,7 @@ public class ForecastFragment extends Fragment {
                 "Fri - Sunny - 10/20",
                 "Fri - Sunny - 10/20"
         };
-        List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
+        final List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
         mForecastAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 R.layout.list_item_forecast,
@@ -94,15 +99,19 @@ public class ForecastFragment extends Fragment {
         ListView listView= (ListView)rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
 
-        listView.setOnClickListener(new AdapterView.OnItemClickListener()){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l){
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String forecast = mForecastAdapter.getItem(position);
-                Toast.makeText(getActivity(), forecast, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), forecast, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), DetailActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(intent);
             }
-        }
+        });
         return rootView;
     }
+
     private class FetchWeatherTask extends AsyncTask<String, Void, String[]>
     {
         private final String LOG_TAG =  FetchWeatherTask.class.getSimpleName();
